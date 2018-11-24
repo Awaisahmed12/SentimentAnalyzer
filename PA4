@@ -1,0 +1,93 @@
+"""
+Program to predict the sentiment of input text as either positive, neagtive or neutral.
+"""
+
+def read_sentiment_words(positives, negatives):
+    """
+    Read the input text file line by line and 
+    return the dictionary of words with their value set to zero.
+    Output format example: {'orange':0, 'banana':0,...}
+    """
+    PositivesentimentWords = open(positives, 'r')
+    lines = PositivesentimentWords.readlines()
+ #    posWords = lines.split()
+    posDict = {}
+    for w in lines:
+        if w not in posDict:
+            posDict[w] = 0
+        else:
+            continue
+    print(posDict)
+
+    NegativesentimentWords = open(negatives, 'r')
+    negLines = NegativesentimentWords.readlines()
+    # negWords = lines.split()
+    negDict = {}
+    for w in negLines:
+        if w not in negDict:
+            negDict[w] = 0
+        else:
+            continue
+    print(negDict)
+
+
+positive_words = {} #read positive sentiment words from file
+negative_words = {} #read negative sentiment words from file
+
+def read_sentences(filename):
+    """
+    Read the input text file line by line and 
+    return the data as a list of list.
+    Output format example: [['1', 'hello , how are you?'], ['2', 'have a great day !'], ...]
+    """
+    #Your code here
+    files = open(filename, 'r')
+    lines = files.readlines()
+    print(lines, len(lines))
+    files.close()
+
+def write_sentiments(filename, sentence_sentiment_lst):
+    """
+    Write list of list of review text sentiment values to file. 
+    The sentence index and the sentiment value must be separated by comma.
+    Example Input: sentence_sentiment_lst = [['1', 'positive'], ['2', 'negative'],...]
+    Output File format: lastname_firstname_sentiments.txt
+    """
+    #Your code here
+
+
+def  write_sentiment_words(filename,  top_words_frequency_lst):
+    """
+    Write the word and frequency value for top 5 sentiment words to file separated by comma.
+    Output File format: lastname_firstname_sentiment_words.txt
+    """
+    #Your code here
+
+
+def predict_sentiment(review_text):
+    """
+    Find the sentiment of the review text, based on the sentiment of each word in the text.
+    Return "postive", "negative", or "neutral" depending on the total sentiment word count value.
+    """
+    global positive_words, negative_words
+    sentiment_count = 0
+    #Your code here
+
+def most_frequent_sentiment_word(sentiment_word_dict):
+    """
+    Find the word with the highest frequency value from the dictionary and
+    return the word and it's frequency.
+    """
+    #Your code here
+'''
+'''
+def main():
+    read_sentences('sentences.txt')
+    read_sentiment_words('positive-words.txt', 'negative-words.txt')
+#    reviews = #read reviews from file
+    
+    #Your code here
+
+    
+if __name__ == '__main__':
+    main()

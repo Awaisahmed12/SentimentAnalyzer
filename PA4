@@ -2,41 +2,30 @@
 Program to predict the sentiment of input text as either positive, neagtive or neutral.
 """
 
-def read_sentiment_words(positives, negatives):
+def read_sentiment_words(filename):
     """
     Read the input text file line by line and 
     return the dictionary of words with their value set to zero.
     Output format example: {'orange':0, 'banana':0,...}
     """
-    PositivesentimentWords = open(positives, 'r')
-    lines = PositivesentimentWords.readlines()
- #    posWords = lines.split()
-    posDict = {}
+    sentiment = open(filename, 'r')
+    lines = sentiment.readlines()
+    Dict = {}
     for w in lines:
-        if w not in posDict:
-            posDict[w] = 0
+        if w not in Dict:
+            Dict[w] = 0
         else:
             continue
-    print(posDict)
-
-    NegativesentimentWords = open(negatives, 'r')
-    negLines = NegativesentimentWords.readlines()
-    # negWords = lines.split()
-    negDict = {}
-    for w in negLines:
-        if w not in negDict:
-            negDict[w] = 0
-        else:
-            continue
-    print(negDict)
-
+    sentiment.close()
+    print(Dict)
+    return Dict
 
 positive_words = {} #read positive sentiment words from file
 negative_words = {} #read negative sentiment words from file
 
 def read_sentences(filename):
     """
-    Read the input text file line by line and 
+    Read the input text file line by line and
     return the data as a list of list.
     Output format example: [['1', 'hello , how are you?'], ['2', 'have a great day !'], ...]
     """
@@ -45,15 +34,43 @@ def read_sentences(filename):
     lines = files.readlines()
     print(lines, len(lines))
     files.close()
+def listOfPositiveWords():
+    postiveList = []
+    for i in read_sentiment_words('positive-words.txt'):
+        postiveList.append(i)
+    return postiveList
+def listOfNegativeWords():
+    negativeList = []
+    for i in read_sentiment_words('negative-words.txt'):
+        negativeList.append(i)
+    return negativeList
 
 def write_sentiments(filename, sentence_sentiment_lst):
     """
-    Write list of list of review text sentiment values to file. 
+    Write a list of lists of review text sentiment values to file.
     The sentence index and the sentiment value must be separated by comma.
     Example Input: sentence_sentiment_lst = [['1', 'positive'], ['2', 'negative'],...]
     Output File format: lastname_firstname_sentiments.txt
+
     """
-    #Your code here
+
+    sentiFile = open(sentence_sentiment_lst, 'w+')
+    negWords = listOfNegativeWords()
+    posWords = listOfPositiveWords()
+    reviewFile = open(filename, 'r')
+    lines = reviewFile.readlines()
+    for w in lines:
+        if w in posWords:
+            sentiFile.write("positive", w)
+        elif w in negWords():
+            sentiFile.writable("negative", w)
+        else:
+            sentiFile.write("neutral", w)
+    return sentiFile
+
+    reviewFile.close()
+    sentiFile.close()
+
 
 
 def  write_sentiment_words(filename,  top_words_frequency_lst):
@@ -79,15 +96,18 @@ def most_frequent_sentiment_word(sentiment_word_dict):
     return the word and it's frequency.
     """
     #Your code here
-'''
-'''
+
 def main():
-    read_sentences('sentences.txt')
-    read_sentiment_words('positive-words.txt', 'negative-words.txt')
+    read_sentences('sentences.tsv')
+    read_sentiment_words('positive-words.txt')
+    read_sentiment_words('negative-words.txt')
+    write_sentiments('Ahmed_Awais_sentiments.txt', 'predict_sentiment.txt')
+
+
 #    reviews = #read reviews from file
-    
+
     #Your code here
 
-    
+
 if __name__ == '__main__':
     main()

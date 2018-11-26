@@ -13,11 +13,11 @@ def read_sentiment_words(filename):
     Dict = {}
     for w in lines:
         if w not in Dict:
+            w = w[:-1]
             Dict[w] = 0
         else:
             continue
     sentiment.close()
-    print(Dict)
     return Dict
 
 positive_words = {} #read positive sentiment words from file
@@ -32,17 +32,25 @@ def read_sentences(filename):
     #Your code here
     files = open(filename, 'r')
     lines = files.readlines()
-    print(lines, len(lines))
-    files.close()
+    sentenceLst = []
+    mainList = []
+    w = 1
+    for i in lines:
+        sentenceLst.append(str(w))
+        w = w + 1
+        sentenceLst.append(i)
+        mainList.append(sentenceLst)
+        sentenceLst = []
+    return mainList
 def listOfPositiveWords():
-    postiveList = []
+    postiveList = {}
     for i in read_sentiment_words('positive-words.txt'):
-        postiveList.append(i)
+        postiveList[i] = 0
     return postiveList
 def listOfNegativeWords():
-    negativeList = []
+    negativeList = {}
     for i in read_sentiment_words('negative-words.txt'):
-        negativeList.append(i)
+        negativeList[i] = 0
     return negativeList
 
 def write_sentiments(filename, sentence_sentiment_lst):
@@ -54,22 +62,34 @@ def write_sentiments(filename, sentence_sentiment_lst):
 
     """
 
-    sentiFile = open(sentence_sentiment_lst, 'w+')
-    negWords = listOfNegativeWords()
-    posWords = listOfPositiveWords()
-    reviewFile = open(filename, 'r')
+    sentiFile = open(filename, 'w+')
+    reviewFile = open(sentence_sentiment_lst, 'r')
     lines = reviewFile.readlines()
-    for w in lines:
-        if w in posWords:
-            sentiFile.write("positive", w)
-        elif w in negWords():
-            sentiFile.writable("negative", w)
+    posWords = listOfPositiveWords()
+    negWords = listOfNegativeWords()
+    p = 1
+    for line in lines:
+        sentimentCount = 0
+        words = line.split("\t")[1]
+        for w in words.split():
+            if w in posWords:
+                sentimentCount += 1
+            elif w in negWords:
+                sentimentCount += -1
+        if sentimentCount > 0:
+            sentiFile.write(str(p) + ", " + "positive" + "\n")
+            p += 1
+        elif sentimentCount < 0:
+            sentiFile.write(str(p) + ", " + "negative" + "\n")
+            p += 1
         else:
-            sentiFile.write("neutral", w)
-    return sentiFile
-
+            sentiFile.write(str(p) + ", " + "neutral" + "\n")
+            p += 1
     reviewFile.close()
     sentiFile.close()
+    return sentiFile
+
+
 
 
 
@@ -99,10 +119,10 @@ def most_frequent_sentiment_word(sentiment_word_dict):
 
 def main():
     read_sentences('sentences.tsv')
-    read_sentiment_words('positive-words.txt')
+    print(read_sentiment_words('positive-words.txt'))
     read_sentiment_words('negative-words.txt')
-    write_sentiments('Ahmed_Awais_sentiments.txt', 'predict_sentiment.txt')
-
+    read_sentences('sentences.tsv')
+    write_sentiments('Ahmed_Awais_sentiments.txt', 'sentences.tsv')
 
 #    reviews = #read reviews from file
 

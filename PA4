@@ -52,7 +52,8 @@ def listOfNegativeWords():
     for i in read_sentiment_words('negative-words.txt'):
         negativeList[i] = 0
     return negativeList
-
+posWords = listOfPositiveWords()
+negWords = listOfNegativeWords()
 def write_sentiments(filename, sentence_sentiment_lst):
     """
     Write a list of lists of review text sentiment values to file.
@@ -65,8 +66,6 @@ def write_sentiments(filename, sentence_sentiment_lst):
     sentiFile = open(filename, 'w+')
     reviewFile = open(sentence_sentiment_lst, 'r')
     lines = reviewFile.readlines()
-    posWords = listOfPositiveWords()
-    negWords = listOfNegativeWords()
     p = 1
     for line in lines:
         sentimentCount = 0
@@ -74,8 +73,10 @@ def write_sentiments(filename, sentence_sentiment_lst):
         for w in words.split():
             if w in posWords:
                 sentimentCount += 1
+                posWords[w] += 1
             elif w in negWords:
                 sentimentCount += -1
+                negWords[w] += 1
         if sentimentCount > 0:
             sentiFile.write(str(p) + ", " + "positive" + "\n")
             p += 1
@@ -93,12 +94,28 @@ def write_sentiments(filename, sentence_sentiment_lst):
 
 
 
-def  write_sentiment_words(filename,  top_words_frequency_lst):
+def  write_sentiment_words(filename, top_words_frequency_lst):
     """
-    Write the word and frequency value for top 5 sentiment words to file separated by comma.
+    Write the word and frequency value for top 5 (no top 2 one negative one positive) sentiment words to file separated by comma.
     Output File format: lastname_firstname_sentiment_words.txt
-    """
-    #Your code here
+  """
+    wordsFile = open(filename, 'w+')
+    comparisonlist = open(top_words_frequency_lst, 'r')
+    maxPosNum = 0
+    maxNegNum = 0
+    for x in posWords:
+        if posWords[x] > maxPosNum:
+            maxPosNum = posWords[x]
+            maxPosWord = x
+    for x in negWords:
+        if negWords[x] > maxNegNum:
+            maxNegNum = negWords[x]
+            maxNegWord = x
+    wordsFile.write("The top positive word is " + "'" + maxPosWord + "'" + " it appears " + str(maxPosNum) + " times." + "\n")
+    wordsFile.write("The top negative word is " + "'" + maxNegWord + "'" + " it appears " + str(maxNegNum) + " times." + "\n")
+    comparisonlist.close()
+    wordsFile.close()
+
 
 
 def predict_sentiment(review_text):
@@ -123,7 +140,7 @@ def main():
     read_sentiment_words('negative-words.txt')
     read_sentences('sentences.tsv')
     write_sentiments('Ahmed_Awais_sentiments.txt', 'sentences.tsv')
-
+    write_sentiment_words('Ahmed_Awais_sentiment_words.txt', 'sentences.tsv')
 #    reviews = #read reviews from file
 
     #Your code here

@@ -20,16 +20,14 @@ def read_sentiment_words(filename):
     sentiment.close()
     return Dict
 
-positive_words = {} #read positive sentiment words from file
-negative_words = {} #read negative sentiment words from file
-
+positive_words = read_sentiment_words('positive-words.txt')
+negative_words =  read_sentiment_words('negative-words.txt')
 def read_sentences(filename):
     """
     Read the input text file line by line and
     return the data as a list of list.
     Output format example: [['1', 'hello , how are you?'], ['2', 'have a great day !'], ...]
     """
-    #Your code here
     files = open(filename, 'r')
     lines = files.readlines()
     sentenceLst = []
@@ -38,7 +36,7 @@ def read_sentences(filename):
     for i in lines:
         sentenceLst.append(str(w))
         w = w + 1
-        sentenceLst.append(i)
+        sentenceLst.append(i.lower())
         mainList.append(sentenceLst)
         sentenceLst = []
     return mainList
@@ -68,9 +66,12 @@ def write_sentiments(filename, sentence_sentiment_lst):
     lines = reviewFile.readlines()
     p = 1
     for line in lines:
+        line.lower()
         sentimentCount = 0
         words = line.split("\t")[1]
+        words = words.lower()
         for w in words.split():
+            w = w.lower()
             if w in posWords:
                 sentimentCount += 1
                 posWords[w] += 1
@@ -111,10 +112,11 @@ def  write_sentiment_words(filename, top_words_frequency_lst):
         if negWords[x] > maxNegNum:
             maxNegNum = negWords[x]
             maxNegWord = x
-    wordsFile.write("The top positive word is " + "'" + maxPosWord + "'" + " it appears " + str(maxPosNum) + " times." + "\n")
-    wordsFile.write("The top negative word is " + "'" + maxNegWord + "'" + " it appears " + str(maxNegNum) + " times." + "\n")
+    wordsFile.write(maxPosWord + ", " + str(maxPosNum) + "\n")
+    wordsFile.write(maxNegWord + ", " + str(maxNegNum) + "\n")
     comparisonlist.close()
     wordsFile.close()
+    return wordsFile
 
 
 
@@ -123,27 +125,91 @@ def predict_sentiment(review_text):
     Find the sentiment of the review text, based on the sentiment of each word in the text.
     Return "postive", "negative", or "neutral" depending on the total sentiment word count value.
     """
-    global positive_words, negative_words
-    sentiment_count = 0
+    reviewFile = open(review_text, 'r')
+    lines = reviewFile.readlines()
+    sentimentCount = 0
+    for line in lines:
+        words = line.split("\t")[1]
+        for w in words.split():
+            w.lower()
+            if w in posWords:
+                sentimentCount += 1
+            elif w in negWords:
+                sentimentCount += -1
+            else:
+                sentimentCount += 0
+    if sentimentCount == 0:
+        return 'neutral'
+    if sentimentCount > 0:
+        return 'positive'
+    if sentimentCount < 0:
+        return 'negative'
+    reviewFile.close()
     #Your code here
 
-def most_frequent_sentiment_word(sentiment_word_dict):
+def most_frequent_sentiment_word():
     """
     Find the word with the highest frequency value from the dictionary and
     return the word and it's frequency.
     """
-    #Your code here
+    ''' #############
+       *******************
+        Deepthi says to return the top positive and 
+        the top negative words and their frequencies
+        I did it a little differently because nothing needs to be passed through 
+        function however I left the pre-written parameter there just to avoid making any changes
+        
+        
+        
+        SO my code returns the max negative and max positive words in one list. it does not require any 
+        additional input, there are no parameters involved.*****'''
+
+
+
+    """ ##########################################"""
+
+
+
+    MaxList = []
+    maxPosNum = 0
+    maxNegNum = 0
+    postiivesList = []
+    negatiiveList = []
+
+    for x in posWords:
+        if posWords[x] > maxPosNum:
+            maxPosNum = posWords[x]
+            maxPosWord = x
+    for x in negWords:
+        if negWords[x] > maxNegNum:
+            maxNegNum = negWords[x]
+            maxNegWord = x
+    postiivesList.append(maxPosNum)
+    postiivesList.append(maxPosWord)
+    negatiiveList.append(maxNegNum)
+    negatiiveList.append(maxNegWord)
+    MaxList.append("Most positive: ")
+    MaxList.append(postiivesList)
+    MaxList.append("Most negative: ")
+    MaxList.append(negatiiveList)
+    return MaxList
+
+
 
 def main():
     read_sentences('sentences.tsv')
-    print(read_sentiment_words('positive-words.txt'))
-    read_sentiment_words('negative-words.txt')
-    read_sentences('sentences.tsv')
     write_sentiments('Ahmed_Awais_sentiments.txt', 'sentences.tsv')
     write_sentiment_words('Ahmed_Awais_sentiment_words.txt', 'sentences.tsv')
-#    reviews = #read reviews from file
+    print(predict_sentiment('sentences.tsv'))
+    print(most_frequent_sentiment_word())
 
-    #Your code here
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!#
+# My most_frequent_sentiment does not require any arguments!! It automatically returns the most frequent #
+# positive and negative words !!                                                                         #
+###########################################################################################################
+
+
+#    reviews = #read reviews from file
 
 
 if __name__ == '__main__':
